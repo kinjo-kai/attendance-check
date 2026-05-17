@@ -21,8 +21,10 @@ public class Main {
 			System.exit(2);
 		}
 		
-		String inputCsv = args[0];
-		String errorCsv = args[1];
+		String inputCsv =
+			    args.length > 0 ? args[0] : "attendance.csv";
+		String errorCsv =
+				args.length > 1 ? args[1] : "error_attendance.csv";
 		String resultCsv = "result_attendance.csv";
 		
 		try {
@@ -37,6 +39,15 @@ public class Main {
 			
 			List<CheckResult> resultList =
 					service.check(attendanceList);
+			
+			logger.info("結果件数=" + resultList.size());
+			
+			CsvUtil.writeResultCsv(resultCsv, resultList);
+			
+			for(CheckResult r : resultList) {
+				logger.info("DEBUG→"+ r.toString());
+			}
+			
 					
 			boolean hasError = false;
 			
@@ -48,8 +59,6 @@ public class Main {
 					hasError = true;
 				}
 			}
-			
-			CsvUtil.writeResultCsv(resultCsv, resultList);
 			
 			if(hasError) {
 				CsvUtil.writeErrorCsv(errorCsv, resultList);
